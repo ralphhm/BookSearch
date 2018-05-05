@@ -2,12 +2,19 @@ ext {
     support_version = "27.1.1"
     arch_version = "1.1.1"
     retrofit_version = "2.4.0"
+    groupie_version = "2.0.3"
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+
+// IMPORTANT!  Enables view caching in viewholders.
+// See: https://github.com/Kotlin/KEEP/blob/master/proposals/android-extensions-entity-caching.md
+androidExtensions {
+    experimental = true
+}
 
 android {
     compileSdkVersion 27
@@ -48,6 +55,10 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+
+    //Groupie
+    implementation "com.xwray:groupie:$groupie_version"
+    implementation "com.xwray:groupie-kotlin-android-extensions:$groupie_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

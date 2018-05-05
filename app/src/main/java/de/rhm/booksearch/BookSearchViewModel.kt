@@ -24,7 +24,7 @@ class BookSearchViewModel: ViewModel() {
                         .map<BookSearchUiState> {result ->
                             when {
                                 result.books.isEmpty() -> BookSearchUiState.EmptyResult(action.query)
-                                else -> BookSearchUiState.Result()
+                                else -> BookSearchUiState.Result(result.books)
                             }
                         }
                         .startWith(BookSearchUiState.Loading)
