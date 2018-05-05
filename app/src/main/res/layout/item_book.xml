@@ -21,7 +21,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="?listPreferredItemPaddingRight" />
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/cover_image"
         android:layout_width="40dp"
         android:layout_height="40dp"

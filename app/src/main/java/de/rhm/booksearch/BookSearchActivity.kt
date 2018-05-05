@@ -42,12 +42,12 @@ class BookSearchActivity : AppCompatActivity() {
     }
 
     private fun updateUi(state: BookSearchUiState) {
-        content.onlyShow(stateToContentView(state))
         when(state) {
             is Result -> section.update(state.books.map { BookItem(it) })
             is Failure -> loading_error.text = state.message
             is EmptyResult -> empty_result.text = getString(R.string.no_books_found, state.query)
         }
+        content.onlyShow(stateToContentView(state))
     }
 
     override fun onDestroy() {
@@ -76,8 +76,9 @@ private val ViewGroup.views get() = (0 until childCount).map{getChildAt(it)}
 class BookItem(private val book: Book): Item() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) = with(viewHolder) {
-        author_name.text = book.authorNames.joinToString(", ")
+        author_name.text = book.authorNames?.joinToString(", ")
         book_title.text = book.title
+        cover_image.setImageURI(book.smallCoverUrl)
     }
 
     override fun getLayout() = R.layout.item_book
