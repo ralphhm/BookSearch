@@ -1,4 +1,4 @@
-package de.rhm.booksearch.api
+package de.rhm.booksearch.api.model
 
 import com.google.gson.annotations.SerializedName
 

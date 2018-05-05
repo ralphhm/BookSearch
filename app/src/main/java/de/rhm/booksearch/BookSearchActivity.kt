@@ -12,8 +12,8 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import de.rhm.booksearch.BookSearchUiState.*
-import de.rhm.booksearch.api.Book
+import de.rhm.booksearch.SearchUiState.*
+import de.rhm.booksearch.api.model.Book
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_book_search.*
 import kotlinx.android.synthetic.main.content_book_search.*
@@ -31,17 +31,17 @@ class BookSearchActivity : AppCompatActivity() {
         search_result.adapter = GroupAdapter<ViewHolder>().apply {
             add(section)
         }
-        with(ViewModelProviders.of(this).get(BookSearchViewModel::class.java)){
+        with(ViewModelProviders.of(this).get(SearchViewModel::class.java)){
             uiState.subscribe { updateUi(it) }.let { disposable.add(it) }
             RxSearchView.queryTextChangeEvents(search_view)
                     .filter{it.isSubmitted}
-                    .map { BookSearchUiAction(it.queryText().toString()) }
+                    .map { SearchUiAction(it.queryText().toString()) }
                     .subscribe{publishSubject.onNext(it)}
                     .let { disposable.add(it) }
         }
     }
 
-    private fun updateUi(state: BookSearchUiState) {
+    private fun updateUi(state: SearchUiState) {
         when(state) {
             is Result -> section.update(state.books.map { BookItem(it) })
             is Failure -> loading_error.text = state.message
@@ -55,7 +55,7 @@ class BookSearchActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun stateToContentView(state: BookSearchUiState) = when(state) {
+    private fun stateToContentView(state: SearchUiState) = when(state) {
         Initial -> initial_content
         Loading -> loading_content
         is Result -> search_result

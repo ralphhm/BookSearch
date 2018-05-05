@@ -10,27 +10,27 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class BookSearchViewModel: ViewModel() {
+class SearchViewModel: ViewModel() {
     private val apiService = Retrofit.Builder()
             .baseUrl("http://openlibrary.org")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .build().create(OpenLibraryService::class.java)
-    val publishSubject = PublishSubject.create<BookSearchUiAction>()
-    val uiState: Observable<out BookSearchUiState> = publishSubject
+    val publishSubject = PublishSubject.create<SearchUiAction>()
+    val uiState: Observable<out SearchUiState> = publishSubject
             .distinctUntilChanged()
             .switchMap { action ->
                 apiService.searchBooks(action.query).toObservable()
-                        .map<BookSearchUiState> {result ->
+                        .map<SearchUiState> { result ->
                             when {
-                                result.books.isEmpty() -> BookSearchUiState.EmptyResult(action.query)
-                                else -> BookSearchUiState.Result(result.books)
+                                result.books.isEmpty() -> SearchUiState.EmptyResult(action.query)
+                                else -> SearchUiState.Result(result.books)
                             }
                         }
-                        .startWith(BookSearchUiState.Loading)
-                        .onErrorReturn { BookSearchUiState.Failure(it.localizedMessage) }
+                        .startWith(SearchUiState.Loading)
+                        .onErrorReturn { SearchUiState.Failure(it.localizedMessage) }
             }
-            .startWith(BookSearchUiState.Initial)
+            .startWith(SearchUiState.Initial)
             .replay(1)
             .autoConnect()
             .observeOn(AndroidSchedulers.mainThread())
