@@ -23,9 +23,9 @@ class BookSearchActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         with(ViewModelProviders.of(this).get(BookSearchViewModel::class.java)){
             uiState.subscribe { updateUi(it) }.let { disposable.add(it) }
-            RxSearchView.queryTextChanges(search_view)
-                    .skipInitialValue()
-                    .map { BookSearchUiAction("$it") }
+            RxSearchView.queryTextChangeEvents(search_view)
+                    .filter{it.isSubmitted}
+                    .map { BookSearchUiAction(it.queryText().toString()) }
                     .subscribe{publishSubject.onNext(it)}
                     .let { disposable.add(it) }
         }
@@ -35,7 +35,7 @@ class BookSearchActivity : AppCompatActivity() {
         content.onlyShow(stateToContentView(state))
         when(state) {
             is Failure -> loading_error.text = state.message
-            is EmptyResult -> empty_result.text = "Didn't find books for \"${state.query}\""
+            is EmptyResult -> empty_result.text = getString(R.string.no_books_found, state.query)
         }
     }
 

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Book Search</string>
     <string name="search_books_hint">Search books…</string>
+    <string name="no_books_found">Couldn\'t find books for \"%s\"</string>
 </resources>
