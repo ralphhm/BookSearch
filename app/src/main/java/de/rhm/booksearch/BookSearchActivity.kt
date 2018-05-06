@@ -12,26 +12,32 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import dagger.android.AndroidInjection
 import de.rhm.booksearch.SearchUiState.*
 import de.rhm.booksearch.api.model.Book
+import de.rhm.booksearch.di.TypedViewModelFactory
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_book_search.*
 import kotlinx.android.synthetic.main.content_book_search.*
 import kotlinx.android.synthetic.main.item_book.*
+import javax.inject.Inject
 
 class BookSearchActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var viewHolderFactory: TypedViewModelFactory<SearchViewModel>
     private val disposable = CompositeDisposable()
     private val section = Section()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_search)
         setSupportActionBar(toolbar)
         search_result.adapter = GroupAdapter<ViewHolder>().apply {
             add(section)
         }
-        with(ViewModelProviders.of(this).get(SearchViewModel::class.java)){
+        with(ViewModelProviders.of(this, viewHolderFactory).get(SearchViewModel::class.java)){
             uiState.subscribe { updateUi(it) }.let { disposable.add(it) }
             RxSearchView.queryTextChangeEvents(search_view)
                     .filter{it.isSubmitted}

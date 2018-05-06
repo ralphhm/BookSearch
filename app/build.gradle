@@ -3,6 +3,7 @@ ext {
     arch_version = "1.1.1"
     retrofit_version = "2.4.0"
     groupie_version = "2.0.3"
+    dagger_version = "2.14.1"
 }
 
 apply plugin: 'com.android.application'
@@ -63,6 +64,12 @@ dependencies {
 
     //Fresco
     implementation 'com.facebook.fresco:fresco:1.9.0'
+
+    //Dagger
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
