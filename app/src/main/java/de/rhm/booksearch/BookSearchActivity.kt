@@ -3,10 +3,6 @@ package de.rhm.booksearch
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.ViewGroup
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -20,6 +16,8 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_book_search.*
 import kotlinx.android.synthetic.main.content_book_search.*
 import kotlinx.android.synthetic.main.item_book.*
+import kotlinx.android.synthetic.main.item_info.*
+import kotlinx.android.synthetic.main.item_loading.*
 import javax.inject.Inject
 
 class BookSearchActivity : AppCompatActivity() {
@@ -34,26 +32,34 @@ class BookSearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_search)
         setSupportActionBar(toolbar)
-        search_result.adapter = GroupAdapter<ViewHolder>().apply {
+        content.adapter = GroupAdapter<ViewHolder>().apply {
             add(section)
         }
-        with(ViewModelProviders.of(this, viewHolderFactory).get(SearchViewModel::class.java)){
+        with(ViewModelProviders.of(this, viewHolderFactory).get(SearchViewModel::class.java)) {
             uiState.subscribe { updateUi(it) }.let { disposable.add(it) }
             RxSearchView.queryTextChangeEvents(search_view)
-                    .filter{it.isSubmitted}
+                    .filter { it.isSubmitted }
+                    .doOnNext { it.view().clearFocus() }
                     .map { SearchUiAction(it.queryText().toString()) }
-                    .subscribe{publishSubject.onNext(it)}
+                    .subscribe { publishSubject.onNext(it) }
                     .let { disposable.add(it) }
         }
     }
 
-    private fun updateUi(state: SearchUiState) {
-        when(state) {
-            is Result -> section.update(state.books.map { BookItem(it) })
-            is Failure -> loading_error.text = state.message
-            is EmptyResult -> empty_result.text = getString(R.string.no_books_found, state.query)
+    private fun updateUi(state: SearchUiState) = when (state) {
+        is Initial -> showPlaceholder(InfoItem(getString(R.string.instruct_search)))
+        is Result -> {
+            section.update(state.books.map { BookItem(it) })
+            content.scrollToPosition(0)
         }
-        content.onlyShow(stateToContentView(state))
+        is Failure -> showPlaceholder(InfoItem(state.message))
+        is EmptyResult -> showPlaceholder(InfoItem(getString(R.string.no_books_found, state.query)))
+        is SearchUiState.Loading -> showPlaceholder(LoadingItem(getString(R.string.searching_for, state.query)))
+    }
+
+    private fun showPlaceholder(item: Item) = with(section) {
+        setPlaceholder(item)
+        update(emptyList())
     }
 
     override fun onDestroy() {
@@ -61,25 +67,9 @@ class BookSearchActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun stateToContentView(state: SearchUiState) = when(state) {
-        Initial -> initial_content
-        Loading -> loading_content
-        is Result -> search_result
-        is Failure -> loading_error
-        is EmptyResult -> empty_result
-    }
-
 }
 
-private fun ViewGroup.onlyShow(view: View) = onlyShow(view.id)
-
-private fun ViewGroup.onlyShow(viewId: Int) = views.forEach{ view ->
-    view.visibility = if(view.id == viewId) VISIBLE else GONE
-}
-
-private val ViewGroup.views get() = (0 until childCount).map{getChildAt(it)}
-
-class BookItem(private val book: Book): Item() {
+class BookItem(private val book: Book) : Item() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) = with(viewHolder) {
         author_name.text = book.authorNames?.joinToString(", ")
@@ -88,5 +78,25 @@ class BookItem(private val book: Book): Item() {
     }
 
     override fun getLayout() = R.layout.item_book
+
+}
+
+class InfoItem(private val text: String) : Item() {
+
+    override fun bind(viewHolder: ViewHolder, position: Int) {
+        viewHolder.info.text = text
+    }
+
+    override fun getLayout() = R.layout.item_info
+
+}
+
+class LoadingItem(private val info: String) : Item() {
+
+    override fun bind(viewHolder: ViewHolder, position: Int) {
+        viewHolder.loading_info.text = info
+    }
+
+    override fun getLayout() = R.layout.item_loading
 
 }

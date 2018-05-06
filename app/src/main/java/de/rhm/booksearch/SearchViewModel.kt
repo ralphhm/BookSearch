@@ -19,7 +19,7 @@ class SearchViewModel @Inject constructor(apiService: OpenLibraryService): ViewM
                                 else -> SearchUiState.Result(result.books)
                             }
                         }
-                        .startWith(SearchUiState.Loading)
+                        .startWith(SearchUiState.Loading(action.query))
                         .onErrorReturn { SearchUiState.Failure(it.localizedMessage) }
             }
             .startWith(SearchUiState.Initial)

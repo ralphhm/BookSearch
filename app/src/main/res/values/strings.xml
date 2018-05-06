@@ -2,4 +2,6 @@
     <string name="app_name">Book Search</string>
     <string name="search_books_hint">Search books…</string>
     <string name="no_books_found">Couldn\'t find books for \"%s\"</string>
+    <string name="instruct_search">Provide your search query in the box to search for books</string>
+    <string name="searching_for">Searching for \"%s\"</string>
 </resources>
