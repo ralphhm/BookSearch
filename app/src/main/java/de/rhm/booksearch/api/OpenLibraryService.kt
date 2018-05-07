@@ -8,6 +8,9 @@ import retrofit2.http.Query
 interface OpenLibraryService {
 
     @GET("search.json")
-    fun searchBooks(@Query("q") query: String): Single<SearchResult>
+    fun searchBooks(
+            @Query("title") title: String? = null,
+            @Query("author") author: String? = null
+    ): Single<SearchResult>
 
 }

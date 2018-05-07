@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView
+import com.jakewharton.rxbinding2.widget.RxAdapterView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -16,6 +17,7 @@ import de.rhm.booksearch.book.BookDetailsActivity
 import de.rhm.booksearch.book.SelectedBook
 import de.rhm.booksearch.di.TypedViewModelFactory
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import kotlinx.android.synthetic.main.activity_book_search.*
 import kotlinx.android.synthetic.main.content_book_search.*
 import kotlinx.android.synthetic.main.item_book.*
@@ -46,10 +48,12 @@ class BookSearchActivity : AppCompatActivity() {
         }
         with(ViewModelProviders.of(this, viewHolderFactory).get(SearchViewModel::class.java)) {
             uiState.subscribe { updateUi(it) }.let { disposable.add(it) }
+            val criterium = RxAdapterView.itemSelections(typeSpinner).map { if(it == 0) Title else Author }
             RxSearchView.queryTextChangeEvents(search_view)
                     .filter { it.isSubmitted }
                     .doOnNext { it.view().clearFocus() }
-                    .map { SearchUiAction(it.queryText().toString()) }
+                    .map { it.queryText().toString() }
+                    .withLatestFrom(criterium, BiFunction<String, Criterion, SearchUiAction> { query, crit -> SearchUiAction(query, crit) })
                     .subscribe { publishSubject.onNext(it) }
                     .let { disposable.add(it) }
         }

@@ -7,19 +7,19 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
-class SearchViewModel @Inject constructor(apiService: OpenLibraryService): ViewModel() {
+class SearchViewModel @Inject constructor(apiService: OpenLibraryService) : ViewModel() {
     val publishSubject = PublishSubject.create<SearchUiAction>()
     val uiState: Observable<out SearchUiState> = publishSubject
             .switchMap { action ->
-                apiService.searchBooks(action.query).toObservable()
-                        .map<SearchUiState> { result ->
-                            when {
-                                result.books.isEmpty() -> SearchUiState.EmptyResult(action.query)
-                                else -> SearchUiState.Result(result.books)
-                            }
-                        }
-                        .startWith(SearchUiState.Loading(action.query))
-                        .onErrorReturn { SearchUiState.Failure(action.query, it) }
+                when (action.criterion) {
+                    Author -> apiService.searchBooks(author = action.query)
+                    Title -> apiService.searchBooks(title = action.query)
+                }.toObservable().map<SearchUiState> { result ->
+                    when {
+                        result.books.isEmpty() -> SearchUiState.EmptyResult(action.query)
+                        else -> SearchUiState.Result(result.books)
+                    }
+                }.startWith(SearchUiState.Loading(action.query)).onErrorReturn { SearchUiState.Failure(action.query, it) }
             }
             .startWith(SearchUiState.Initial)
             .replay(1)
