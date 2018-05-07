@@ -8,7 +8,11 @@ class Book(
         @SerializedName("author_name")
         val authorNames: List<String>?,
         @SerializedName("title")
-        val title: String
-) {
-        val smallCoverUrl get() = "http://covers.openlibrary.org/b/ID/$coverId-S.jpg"
+        val title: String,
+        @SerializedName("publish_date")
+        val publishDates: List<String>?) {
+
+    val smallCoverUrl get() = "http://covers.openlibrary.org/b/ID/$coverId-S.jpg"
+    val largeCoverUrl get() = "http://covers.openlibrary.org/b/ID/$coverId-L.jpg"
+
 }

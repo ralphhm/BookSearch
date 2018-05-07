@@ -4,6 +4,7 @@ import android.app.Application
 import dagger.Module
 import dagger.Provides
 import de.rhm.booksearch.api.OpenLibraryService
+import de.rhm.booksearch.book.SelectedBook
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -24,5 +25,9 @@ class AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .build().create(OpenLibraryService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideSelectedBook() = SelectedBook()
 
 }

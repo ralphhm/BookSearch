@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    tools:context=".book.BookDetailsActivity"
+    tools:showIn="@layout/activity_book_details">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/content_padding_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="?attr/listPreferredItemPaddingLeft" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/content_padding_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="?attr/listPreferredItemPaddingRight" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/cover_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/scrim_top" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:background="@drawable/scrim_bottom"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/author_names"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColorHint="@android:color/primary_text_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/vertical_center"
+        app:layout_constraintStart_toStartOf="@id/content_padding_start">
+
+        <android.support.design.widget.TextInputEditText
+            style="@style/TextInput_Disabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_authors"
+            tools:text="Author names" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/publish_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColorHint="@android:color/primary_text_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/content_padding_end"
+        app:layout_constraintStart_toStartOf="@id/vertical_center">
+
+        <android.support.design.widget.TextInputEditText
+            style="@style/TextInput_Disabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_publish_dates"
+            tools:text="2018" />
+    </android.support.design.widget.TextInputLayout>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -4,4 +4,8 @@
     <string name="no_books_found">Couldn\'t find books for \"%s\"</string>
     <string name="instruct_search">Provide your search query in the box to search for books</string>
     <string name="searching_for">Searching for \"%s\"</string>
+    <string name="title_activity_book_details">Book Details</string>
+    <string name="label_book_title">Book title</string>
+    <string name="label_authors">Authors</string>
+    <string name="label_publish_dates">Publications</string>
 </resources>

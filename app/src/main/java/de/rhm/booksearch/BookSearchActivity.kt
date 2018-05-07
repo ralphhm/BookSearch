@@ -1,6 +1,7 @@
 package de.rhm.booksearch
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView
@@ -11,6 +12,8 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import dagger.android.AndroidInjection
 import de.rhm.booksearch.SearchUiState.*
 import de.rhm.booksearch.api.model.Book
+import de.rhm.booksearch.book.BookDetailsActivity
+import de.rhm.booksearch.book.SelectedBook
 import de.rhm.booksearch.di.TypedViewModelFactory
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_book_search.*
@@ -26,6 +29,8 @@ class BookSearchActivity : AppCompatActivity() {
     lateinit var viewHolderFactory: TypedViewModelFactory<SearchViewModel>
     private val disposable = CompositeDisposable()
     private val section = Section()
+    @Inject
+    lateinit var selectedBook: SelectedBook
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -34,6 +39,10 @@ class BookSearchActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         content.adapter = GroupAdapter<ViewHolder>().apply {
             add(section)
+            setOnItemClickListener { item, _ ->  (item as? BookItem)?.let {
+                selectedBook.select(item.book)
+                startActivity(Intent(this@BookSearchActivity, BookDetailsActivity::class.java))
+            }}
         }
         with(ViewModelProviders.of(this, viewHolderFactory).get(SearchViewModel::class.java)) {
             uiState.subscribe { updateUi(it) }.let { disposable.add(it) }
@@ -69,7 +78,7 @@ class BookSearchActivity : AppCompatActivity() {
 
 }
 
-class BookItem(private val book: Book) : Item() {
+class BookItem(val book: Book) : Item() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) = with(viewHolder) {
         author_name.text = book.authorNames?.joinToString(", ")
