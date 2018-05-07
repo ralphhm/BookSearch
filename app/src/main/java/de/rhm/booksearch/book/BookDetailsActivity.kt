@@ -21,7 +21,7 @@ class BookDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_book_details)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        selectedBook.selectedBook.observe(this, Observer {
+        selectedBook.observe(this, Observer {
             bind(it!!)
         })
     }

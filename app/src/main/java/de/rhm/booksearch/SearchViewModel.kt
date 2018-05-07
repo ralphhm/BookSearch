@@ -10,7 +10,6 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(apiService: OpenLibraryService): ViewModel() {
     val publishSubject = PublishSubject.create<SearchUiAction>()
     val uiState: Observable<out SearchUiState> = publishSubject
-            .distinctUntilChanged()
             .switchMap { action ->
                 apiService.searchBooks(action.query).toObservable()
                         .map<SearchUiState> { result ->
@@ -20,7 +19,7 @@ class SearchViewModel @Inject constructor(apiService: OpenLibraryService): ViewM
                             }
                         }
                         .startWith(SearchUiState.Loading(action.query))
-                        .onErrorReturn { SearchUiState.Failure(it.localizedMessage) }
+                        .onErrorReturn { SearchUiState.Failure(action.query, it) }
             }
             .startWith(SearchUiState.Initial)
             .replay(1)

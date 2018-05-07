@@ -27,8 +27,8 @@
         android:layout_height="40dp"
         android:scaleType="centerInside"
         app:layout_constraintStart_toStartOf="@id/item_start_padding"
-        tools:src="@tools:sample/avatars"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
 
     <android.support.constraint.Guideline
         android:id="@+id/text_start_padding"

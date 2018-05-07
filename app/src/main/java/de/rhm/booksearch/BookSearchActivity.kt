@@ -40,7 +40,7 @@ class BookSearchActivity : AppCompatActivity() {
         content.adapter = GroupAdapter<ViewHolder>().apply {
             add(section)
             setOnItemClickListener { item, _ ->  (item as? BookItem)?.let {
-                selectedBook.select(item.book)
+                selectedBook.value = item.book
                 startActivity(Intent(this@BookSearchActivity, BookDetailsActivity::class.java))
             }}
         }
@@ -61,9 +61,9 @@ class BookSearchActivity : AppCompatActivity() {
             section.update(state.books.map { BookItem(it) })
             content.scrollToPosition(0)
         }
-        is Failure -> showPlaceholder(InfoItem(state.message))
+        is Failure -> showPlaceholder(InfoItem(state.query))
         is EmptyResult -> showPlaceholder(InfoItem(getString(R.string.no_books_found, state.query)))
-        is SearchUiState.Loading -> showPlaceholder(LoadingItem(getString(R.string.searching_for, state.query)))
+        is Loading -> showPlaceholder(LoadingItem(getString(R.string.searching_for, state.query)))
     }
 
     private fun showPlaceholder(item: Item) = with(section) {
