@@ -11,4 +11,3 @@ Architecture Components ViewModel is used to implement MVVM and support orientat
 ## Improvements
 * Add (remote) logging of error cases
 * Differentiate network errors (where retry makes sense) and runtime exceptions (where something is wrong with the chain) in SearchViewModel
-* Let the user decide, whether he wants to search for book titles o author names
