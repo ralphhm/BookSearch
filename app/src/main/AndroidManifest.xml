@@ -26,11 +26,7 @@
             android:name=".book.BookDetailsActivity"
             android:label="@string/title_activity_book_details"
             android:parentActivityName=".BookSearchActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.rhm.booksearch.BookSearchActivity" />
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

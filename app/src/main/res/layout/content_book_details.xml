@@ -31,8 +31,10 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/cover_image"
+        android:fitsSystemWindows="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:actualImageScaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"
@@ -40,14 +42,10 @@
         tools:src="@tools:sample/backgrounds/scenic" />
 
     <View
+        android:id="@+id/scrim"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@drawable/scrim_top" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="128dp"
-        android:background="@drawable/scrim_bottom"
+        android:layout_height="96dp"
+        android:background="@color/black_overlay"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <android.support.design.widget.TextInputLayout
