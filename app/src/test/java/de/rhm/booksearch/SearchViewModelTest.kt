@@ -27,6 +27,7 @@ class SearchViewModelTest {
     val service = mock<OpenLibraryService>()
     val searchViewModel = SearchViewModel(service)
     val uiStateObserver = TestObserver<SearchUiState>()
+    val searchUiAction = SearchUiAction(query, Title)
 
     @Before
     fun setupTest() {
@@ -40,45 +41,45 @@ class SearchViewModelTest {
 
     @Test
     fun searchAction_triggersBookSearch() {
-        searchViewModel.publishSubject.onNext(SearchUiAction(query))
-        verify(service).searchBooks(eq(query))
+        searchViewModel.publishSubject.onNext(searchUiAction)
+        verify(service).searchBooks(eq(query), eq(null))
     }
 
     @Test
     fun searchAction_triggersLoadingState() {
-        whenever(service.searchBooks(any())).thenReturn(Single.never())
-        searchViewModel.publishSubject.onNext(SearchUiAction(query))
+        whenever(service.searchBooks(anyOrNull(), anyOrNull())).thenReturn(Single.never())
+        searchViewModel.publishSubject.onNext(searchUiAction)
         uiStateObserver.assertLastValue(SearchUiState.Loading(query))
     }
 
     @Test
     fun searchAction_triggersEmptyState_whenResultIsEmpty() {
-        whenever(service.searchBooks(any())).thenReturn(Single.just(SearchResult(emptyList())))
-        searchViewModel.publishSubject.onNext(SearchUiAction(query))
+        whenever(service.searchBooks(anyOrNull(), anyOrNull())).thenReturn(Single.just(SearchResult(emptyList())))
+        searchViewModel.publishSubject.onNext(searchUiAction)
         uiStateObserver.assertLastValue(SearchUiState.EmptyResult(query))
     }
 
     @Test
     fun searchAction_triggersResultState_whenResultIsNotEmpty() {
         val books = listOf(Book())
-        whenever(service.searchBooks(any())).thenReturn(Single.just(SearchResult(books)))
-        searchViewModel.publishSubject.onNext(SearchUiAction(query))
+        whenever(service.searchBooks(anyOrNull(), anyOrNull())).thenReturn(Single.just(SearchResult(books)))
+        searchViewModel.publishSubject.onNext(searchUiAction)
         uiStateObserver.assertLastValue(SearchUiState.Result(books))
     }
 
     @Test
     fun searchAction_triggersFailureState_whenException() {
         val exception = Exception()
-        whenever(service.searchBooks(any())).thenReturn(Single.error(exception))
-        searchViewModel.publishSubject.onNext(SearchUiAction(query))
+        whenever(service.searchBooks(anyOrNull(), anyOrNull())).thenReturn(Single.error(exception))
+        searchViewModel.publishSubject.onNext(searchUiAction)
         uiStateObserver.assertLastValue(SearchUiState.Failure(query, exception))
     }
 
     @Test
     fun subscription_triggersLastState_whenResubscribed() {
         val books = listOf(Book())
-        whenever(service.searchBooks(any())).thenReturn(Single.just(SearchResult(books)))
-        searchViewModel.publishSubject.onNext(SearchUiAction(query))
+        whenever(service.searchBooks(anyOrNull(), anyOrNull())).thenReturn(Single.just(SearchResult(books)))
+        searchViewModel.publishSubject.onNext(searchUiAction)
         TestObserver<SearchUiState>().also {
             searchViewModel.uiState.subscribe(it)
         }.assertLastValue(SearchUiState.Result(books))
