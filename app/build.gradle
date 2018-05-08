@@ -10,6 +10,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.ralphhm'
 
 // IMPORTANT!  Enables view caching in viewholders.
 // See: https://github.com/Kotlin/KEEP/blob/master/proposals/android-extensions-entity-caching.md
