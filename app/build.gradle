@@ -29,50 +29,45 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.debug
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-retrofit.pro',
-                    'proguard-fresco.pro'
+                    'proguard-fresco.pro',
+                    'proguard-dagger.pro'
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:design:$support_version"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-
     //RxJava
-    implementation "io.reactivex.rxjava2:rxjava:2.1.13"
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1'
-
     //ViewModel
     implementation "android.arch.lifecycle:extensions:$arch_version"
     kapt "android.arch.lifecycle:compiler:$arch_version"
-
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
-
     //Groupie
     implementation "com.xwray:groupie:$groupie_version"
     implementation "com.xwray:groupie-kotlin-android-extensions:$groupie_version"
-
     //Fresco
     implementation 'com.facebook.fresco:fresco:1.9.0'
-
     //Dagger
     implementation "com.google.dagger:dagger:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
-
     testImplementation 'junit:junit:4.12'
-    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
+    testImplementation 'com.nhaarman:mockito-kotlin:1.5.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
